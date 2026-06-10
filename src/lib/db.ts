@@ -19,5 +19,5 @@ pool = global.mysqlPool_v2;
 export default pool;
 
 declare global {
-  var mysqlPool: mysql.Pool | undefined;
+  var mysqlPool_v2: mysql.Pool | undefined;
 }
