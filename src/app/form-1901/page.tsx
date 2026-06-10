@@ -12,9 +12,9 @@ const COUNTRIES = [
 
 const InputField = ({ label, name, type = "text", placeholder = "", required = false, formData, updateForm, pattern, min, optionalLabel }: any) => (
   <div className="space-y-1">
-    <label className="text-[13px] font-semibold text-gray-700 flex justify-between">
+    <label className="text-[13px] font-semibold text-[var(--color-text-primary)] flex justify-between">
       <span>{label} {required && <span className="text-red-500">*</span>}</span>
-      {optionalLabel && <span className="text-gray-400 font-normal text-[11px]">(Optional)</span>}
+      {optionalLabel && <span className="text-[var(--color-text-secondary)] font-normal text-[11px]">(Optional)</span>}
     </label>
     <input 
       type={type} 
@@ -23,7 +23,7 @@ const InputField = ({ label, name, type = "text", placeholder = "", required = f
       onChange={updateForm} 
       pattern={pattern}
       min={min}
-      className="w-full border-gray-300 rounded-lg bg-gray-50 border px-3 py-2.5 text-sm focus:ring-2 focus:ring-[var(--color-bir-yellow)] focus:border-transparent outline-none transition-all" 
+      className="w-full border border-[var(--color-border)] rounded-lg bg-[var(--color-surface-light)] px-3 py-2.5 text-sm text-[var(--color-text-primary)] focus:ring-2 focus:ring-[var(--color-accent-primary)] focus:border-transparent outline-none transition-all placeholder:text-[var(--color-text-secondary)]" 
       placeholder={placeholder} 
       required={required} 
     />
@@ -316,46 +316,64 @@ export default function Form1901() {
     setStep(0);
   };
 
-  const selectStyles = "w-full border px-3 py-2.5 text-sm rounded-lg bg-gray-50 outline-none focus:ring-2 focus:ring-[var(--color-bir-yellow)]";
-  const labelStyles = "text-[13px] font-semibold text-gray-700";
+  const selectStyles = "w-full border border-[var(--color-border)] px-3 py-2.5 text-sm rounded-lg bg-[var(--color-surface-light)] text-[var(--color-text-primary)] outline-none focus:ring-2 focus:ring-[var(--color-accent-primary)]";
+  const labelStyles = "text-[13px] font-semibold text-[var(--color-text-primary)]";
 
   // Calculate minimum expiry date (either effectivity date or today)
   const minExpiryDate = formData.effectivityDate || new Date().toISOString().split("T")[0];
 
   if (step === 0) {
     return (
-      <div className="min-h-screen bg-[#0a192f] flex flex-col font-sans relative overflow-hidden">
-        {/* Subtle background glow effect */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-900/20 rounded-full blur-[100px] pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-yellow-500/10 rounded-full blur-[100px] pointer-events-none"></div>
-
-        <div className="container mx-auto max-w-md p-6 sm:p-8 flex-1 flex flex-col justify-between relative z-10">
-          <div className="flex items-center gap-3 mt-4">
-            <div className="bg-[#ffc107] rounded-full p-1 w-10 h-10 flex items-center justify-center overflow-hidden">
-              <img src="/bir-logo.png" alt="BIR Logo" className="w-full h-full object-contain" />
-            </div>
-            <span className="text-white font-bold text-lg tracking-tight">Bureau of Internal Revenue</span>
-          </div>
-
-          <div className="my-auto py-12">
-            <div className="inline-flex items-center gap-2 border border-white/20 bg-white/5 rounded-full px-4 py-1.5 mb-8 text-sm text-gray-300">
-              <div className="w-2 h-2 rounded-full bg-[#ffc107]"></div>
-              Modernized Digital Form
-            </div>
+      <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex flex-col font-sans relative overflow-hidden">
+        {/* Header */}
+        <nav className="border-b border-[var(--color-border)] bg-[var(--color-surface)]/80 backdrop-blur-lg sticky top-0 z-50">
+          <div className="max-w-md mx-auto px-6 py-3 sm:max-w-2xl flex items-center justify-between gap-3">
+            {step < 8 && (
+              <Link href="/" className="hover:text-[var(--color-text-secondary)] transition-colors">
+                <ArrowLeft size={20} />
+              </Link>
+            )}
+            <Link href="/" className="flex items-center gap-2 font-bold">
+              <img src="/bir-logo.png" alt="BIR" className="w-9 h-9 object-contain" />
+              <div className="flex flex-col leading-tight -space-y-0.5">
+                <span className="text-xs text-[var(--color-text-secondary)]">Bureau of</span>
+                <span className="text-sm text-[var(--color-accent-primary)] font-bold">Internal Revenue</span>
+              </div>
+            </Link>
             
-            <h1 className="text-[3.5rem] font-extrabold text-white leading-[1.05] mb-6 tracking-tight">
-              Register your<br/>
-              <span className="text-[#ffc107]">Business</span><br/>
-              with ease.
+            <div className="flex items-center gap-2 ml-auto">
+              {step >= 8 ? (
+                <button onClick={handleLogout} className="text-xs bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg font-semibold transition-colors">
+                  Logout
+                </button>
+              ) : (
+                <div className="text-xs bg-[var(--color-surface-light)] text-[var(--color-text-secondary)] px-3 py-1.5 rounded-lg border border-[var(--color-border)]">
+                  {`Step ${step} of 7`}
+                </div>
+              )}
+            </div>
+          </div>
+        </nav>
+
+        {/* Subtle background glow effect */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-900/10 rounded-full blur-[100px] pointer-events-none"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-yellow-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+        <div className="max-w-md mx-auto px-6 sm:px-8 flex-1 flex flex-col justify-center relative z-10">
+          <div className="my-auto py-12">
+            <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-6 tracking-tight">
+              <span className="text-[var(--color-accent-primary)]">Register your</span><br/>
+              <span className="text-white">Business</span><br/>
+              <span className="text-[var(--color-accent-primary)]">with ease.</span>
             </h1>
 
-            <p className="text-lg text-gray-400 mb-12 leading-relaxed">
-              Experience the new, streamlined BIR Form 1901. Apply for registration of self-employed and mixed income individuals, estates, and trusts digitally.
+            <p className="text-lg text-[var(--color-text-secondary)] mb-12 leading-relaxed max-w-md">
+              Experience the streamlined <span className="text-[var(--color-accent-primary)] font-semibold">BIR Form 1901</span>. Apply for registration of <span className="text-[var(--color-accent-primary)]">self-employed and mixed income</span> individuals, estates, and trusts digitally.
             </p>
 
             <button 
               onClick={() => setStep(1)} 
-              className="w-full bg-[#ffc107] text-[#0a192f] font-bold text-lg py-4 rounded-full flex justify-center items-center gap-2 hover:bg-yellow-400 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-yellow-500/20"
+              className="w-full bg-[var(--color-accent-primary)] text-black font-bold text-base py-3.5 rounded-lg flex justify-center items-center gap-2 hover:bg-yellow-400 active:scale-95 transition-all shadow-lg shadow-yellow-500/20"
             >
               Start Application <ArrowRight size={20} strokeWidth={2.5} />
             </button>
@@ -366,48 +384,46 @@ export default function Form1901() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-900 font-sans">
-      <header className="bg-[#1e3a8a] text-white p-3 sm:p-4 shadow-md sticky top-0 z-50">
-        <div className="container mx-auto max-w-5xl flex items-center gap-3">
+    <div className="min-h-screen bg-[var(--color-background)] text-[var(--color-text-primary)]">
+      <header className="bg-[var(--color-surface)]/80 text-[var(--color-text-primary)] backdrop-blur-lg sticky top-0 z-50 border-b border-[var(--color-border)]">
+        <div className="max-w-md mx-auto px-6 py-3 sm:max-w-2xl lg:max-w-4xl flex items-center gap-3">
           {step < 8 && (
-            <Link href="/" className="hover:text-gray-300 transition-colors">
+            <Link href="/" className="hover:text-[var(--color-text-secondary)] transition-colors">
               <ArrowLeft size={20} />
             </Link>
           )}
           <div className="flex items-center gap-3">
-            <div className="bg-white rounded-full p-1 w-9 h-9 flex items-center justify-center overflow-hidden">
-              <img src="/bir-logo.png" alt="BIR Logo" className="w-full h-full object-contain" />
-            </div>
-            <h1 className="font-semibold text-base hidden sm:block">Form 1901 Registration</h1>
+            <img src="/bir-logo.png" alt="BIR" className="w-9 h-9 object-contain" />
+            <h1 className="font-semibold text-sm sm:text-base">BIR Form 1901 Registration</h1>
           </div>
           
           {step >= 8 ? (
-            <button onClick={handleLogout} className="ml-auto text-xs bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-full font-semibold transition-colors">
+            <button onClick={handleLogout} className="ml-auto text-xs bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded-lg font-semibold transition-colors">
               Logout
             </button>
           ) : (
-            <div className="ml-auto text-xs bg-white/10 px-3 py-1 rounded-full border border-white/20">
+            <div className="ml-auto text-xs bg-[var(--color-surface-light)] text-[var(--color-text-secondary)] px-3 py-1.5 rounded-lg border border-[var(--color-border)]">
               {`Step ${step} of 7`}
             </div>
           )}
         </div>
       </header>
 
-      <main className="container mx-auto max-w-4xl px-4 py-6 sm:py-8">
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+      <main className="max-w-md mx-auto px-4 py-6 sm:py-8 sm:max-w-2xl lg:max-w-4xl">
+        <div className="bg-[var(--color-surface-light)]/50 rounded-2xl border border-[var(--color-border)] overflow-hidden backdrop-blur-sm">
           {step < 8 && (
-            <div className="px-4 py-6 sm:px-6 sm:py-8 border-b border-gray-100 bg-gray-50/50">
+            <div className="px-4 py-6 sm:px-6 sm:py-8 border-b border-[var(--color-border)] bg-[var(--color-surface)]/60">
               <div className="flex justify-between items-center mb-6 sm:mb-8">
-                <span className="font-bold text-gray-800 text-sm sm:text-lg">Step {step} of 7</span>
-                <span className="text-gray-500 text-xs sm:text-sm font-medium">{Math.round(((step - 1) / 7) * 100)}% complete</span>
+                <span className="font-bold text-[var(--color-text-primary)] text-sm sm:text-lg">Step {step} of 7</span>
+                <span className="text-[var(--color-text-secondary)] text-xs sm:text-sm font-medium">{Math.round(((step - 1) / 7) * 100)}% complete</span>
               </div>
               
               <div className="relative flex justify-between items-center w-full max-w-3xl mx-auto px-1 sm:px-4">
                 {/* Background Line */}
-                <div className="absolute left-1 right-1 sm:left-4 sm:right-4 top-1/2 -translate-y-1/2 h-1 bg-gray-200 rounded"></div>
+                <div className="absolute left-1 right-1 sm:left-4 sm:right-4 top-1/2 -translate-y-1/2 h-1 bg-[var(--color-border)] rounded"></div>
                 {/* Active Line Progress */}
-                <div className="absolute left-1 sm:left-4 top-1/2 -translate-y-1/2 h-1 bg-[#1e3a8a] rounded transition-all duration-500 sm:block hidden" style={{ width: `calc(${((step - 1) / 6) * 100}% - 2rem)` }}></div>
-                <div className="absolute left-1 sm:left-4 top-1/2 -translate-y-1/2 h-1 bg-[#1e3a8a] rounded transition-all duration-500 sm:hidden" style={{ width: `calc(${((step - 1) / 6) * 100}% - 0.5rem)` }}></div>
+                <div className="absolute left-1 sm:left-4 top-1/2 -translate-y-1/2 h-1 bg-[var(--color-accent-primary)] rounded transition-all duration-500 sm:block hidden" style={{ width: `calc(${((step - 1) / 6) * 100}% - 2rem)` }}></div>
+                <div className="absolute left-1 sm:left-4 top-1/2 -translate-y-1/2 h-1 bg-[var(--color-accent-primary)] rounded transition-all duration-500 sm:hidden" style={{ width: `calc(${((step - 1) / 6) * 100}% - 0.5rem)` }}></div>
                 
                 {FORM_STEPS.map((s) => {
                   const isActive = step === s.id;
@@ -416,15 +432,15 @@ export default function Form1901() {
                   return (
                     <div key={s.id} className="relative flex flex-col items-center group z-10">
                       <div className={`w-7 h-7 sm:w-10 sm:h-10 rounded-full flex items-center justify-center text-xs sm:text-sm font-bold transition-all duration-300 ${
-                        isActive ? 'bg-[#1e3a8a] text-white ring-[3px] sm:ring-[4px] ring-[#1e3a8a]/20 border-2 border-transparent' :
-                        isCompleted ? 'bg-white border-2 border-[#1e3a8a] text-[#1e3a8a]' :
-                        'bg-white border-2 border-gray-300 text-gray-400'
+                        isActive ? 'bg-[var(--color-accent-primary)] text-black ring-[3px] sm:ring-[4px] ring-[var(--color-accent-primary)]/20 border-2 border-transparent' :
+                        isCompleted ? 'bg-[var(--color-surface-light)] border-2 border-[var(--color-accent-primary)] text-[var(--color-accent-primary)]' :
+                        'bg-[var(--color-surface-light)] border-2 border-[var(--color-border)] text-[var(--color-text-secondary)]'
                       }`}>
                         {s.id}
                       </div>
                       <span className={`absolute -bottom-5 sm:-bottom-6 text-[10px] sm:text-[11px] font-semibold whitespace-nowrap ${
-                        isActive ? 'block text-[#1e3a8a]' : 
-                        isCompleted ? 'hidden sm:block text-gray-700' : 'hidden sm:block text-gray-400'
+                        isActive ? 'block text-[var(--color-accent-primary)]' : 
+                        isCompleted ? 'hidden sm:block text-[var(--color-text-primary)]' : 'hidden sm:block text-[var(--color-text-secondary)]'
                       }`}>
                         {s.label}
                       </span>
@@ -439,37 +455,37 @@ export default function Form1901() {
             <div className="p-0">
               {showSummary ? (
                 <>
-                  <div className="bg-[#1e3a8a] p-8 text-center border-b border-blue-900">
+                  <div className="bg-slate-800/60 p-8 text-center border-b border-slate-700">
                     <h2 className="text-2xl font-bold text-white">Application Summary</h2>
-                    <p className="text-sm text-blue-200 mt-2">Here is the complete record of your submission.</p>
+                    <p className="text-sm text-slate-300 mt-2">Here is the complete record of your submission.</p>
                   </div>
               
-              <div className="p-6 sm:p-10 space-y-8 bg-white">
+              <div className="p-6 sm:p-10 space-y-8 bg-slate-800/30">
                 <ApplicationSummaryView formData={formData} />
               </div>
                 
-              <div className="p-6 border-t bg-gray-50 flex justify-center">
-                <button onClick={() => setShowSummary(false)} className="bg-[#1e3a8a] text-white px-8 py-2.5 rounded-lg hover:bg-blue-800 transition-colors font-semibold flex items-center gap-2">
+              <div className="p-6 border-t border-slate-700 bg-slate-800/20 flex justify-center">
+                <button onClick={() => setShowSummary(false)} className="bg-[var(--color-bir-yellow)] text-[var(--color-bir-blue)] px-8 py-2.5 rounded-lg hover:bg-yellow-300 transition-colors font-semibold flex items-center gap-2">
                   <ArrowLeft size={18} /> Back to Dashboard
                 </button>
               </div>
             </>
               ) : (
-                <div className="p-8 sm:p-16 text-center bg-gray-50 min-h-[450px]">
-                  <div className="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-200">
+                <div className="p-8 sm:p-16 text-center bg-slate-800/30 min-h-[450px] flex flex-col items-center justify-center">
+                  <div className="w-16 h-16 bg-green-500 text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg">
                     <CheckCircle2 size={32} />
                   </div>
-                  <h2 className="text-3xl font-bold text-[#1e3a8a]">Welcome, {formData.tpName || 'Taxpayer'}!</h2>
-                  <p className="text-gray-600 mt-2 max-w-md mx-auto">Your application has been successfully processed and recorded in the system.</p>
+                  <h2 className="text-3xl font-bold text-[var(--color-bir-yellow)]">Welcome, {formData.tpName || 'Taxpayer'}!</h2>
+                  <p className="text-slate-300 mt-2 max-w-md mx-auto">Your application has been successfully processed and recorded in the system.</p>
                   
                   <div className="mt-12 grid grid-cols-1 max-w-xs mx-auto">
-                    <button onClick={() => setShowSummary(true)} className="bg-white border border-gray-200 p-6 rounded-xl shadow-sm hover:shadow-md hover:border-blue-400 transition-all group flex flex-col items-center gap-4 cursor-pointer text-left">
-                        <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
+                    <button onClick={() => setShowSummary(true)} className="bg-slate-700 border border-slate-600 p-6 rounded-lg shadow-sm hover:shadow-md hover:border-[var(--color-bir-yellow)] transition-all group flex flex-col items-center gap-4 cursor-pointer text-left">
+                        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-[var(--color-bir-yellow)] group-hover:scale-110 transition-transform">
                             <FileText size={32} />
                         </div>
                         <div className="text-center">
-                            <h3 className="font-bold text-gray-800 text-lg">Application Summary</h3>
-                            <p className="text-xs text-gray-500 mt-1">Review the details of your submitted form</p>
+                            <h3 className="font-bold text-white text-lg">Application Summary</h3>
+                            <p className="text-xs text-slate-400 mt-1">Review the details of your submitted form</p>
                         </div>
                     </button>
                   </div>
@@ -477,12 +493,12 @@ export default function Form1901() {
               )}
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="p-6 sm:p-10">
+            <form onSubmit={handleSubmit} className="p-6 sm:p-10 bg-[var(--color-background)]">
               
               {/* STEP 1 */}
               {step === 1 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
-                  <h2 className="text-xl font-bold text-[#1e3a8a] border-b pb-3">Step 1: Applicant Personal Details</h2>
+                  <h2 className="text-xl font-bold text-[var(--color-accent-primary)] border-b border-[var(--color-border)] pb-3">Step 1: Applicant Personal Details</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <InputField label="Taxpayer Identification Number (TIN)" name="tin" placeholder="000-000-000-000" formData={formData} updateForm={updateForm} optionalLabel />
                     <InputField label="PhilSys Card Number" name="philsysCardNum" placeholder="0000-0000-0000-0000" formData={formData} updateForm={updateForm} optionalLabel />

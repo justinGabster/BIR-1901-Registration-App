@@ -2,112 +2,163 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Mail, Lock, User } from 'lucide-react';
+import { ArrowLeft, Mail, Lock, User, Eye, EyeOff } from 'lucide-react';
+import { useState } from 'react';
 
 export default function SignupPage() {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSignup = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate signup and redirect to the form
     router.push('/form-1901');
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-bir-blue)] text-white flex flex-col justify-center items-center relative p-6">
-      <Link href="/" className="absolute top-8 left-8 flex items-center gap-2 text-gray-400 hover:text-white transition-colors">
-        <ArrowLeft size={20} />
-        Back to Home
-      </Link>
-      
-      <div className="w-full max-w-md bg-white/5 border border-white/10 backdrop-blur-xl p-8 sm:p-10 rounded-3xl shadow-2xl relative overflow-hidden my-8">
-        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[var(--color-bir-red)] via-[var(--color-bir-yellow)] to-[var(--color-bir-blue)]"></div>
-        
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-2">Create Account</h2>
-          <p className="text-gray-400">Start your digital Form 1901 registration</p>
-        </div>
-        
-        <form onSubmit={handleSignup} className="space-y-5">
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300" htmlFor="name">Full Name</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                <User size={20} />
-              </div>
-              <input 
-                id="name"
-                type="text" 
-                className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-[var(--color-bir-yellow)] focus:border-transparent transition-all"
-                placeholder="Juan Dela Cruz"
-                required
-              />
+    <div className="min-h-screen bg-[var(--color-background)]">
+      {/* Header */}
+      <header className="border-b border-[var(--color-border)] bg-[var(--color-surface)]/80 backdrop-blur-lg sticky top-0 z-40">
+        <div className="max-w-md mx-auto px-6 py-3 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2 font-bold">
+            <img src="/bir-logo.png" alt="BIR" className="w-9 h-9 object-contain" />
+            <div className="flex flex-col leading-tight -space-y-0.5">
+              <span className="text-xs text-[var(--color-text-secondary)]">Bureau of</span>
+              <span className="text-sm sm:text-lg text-[var(--color-accent-primary)] font-bold">Internal Revenue</span>
             </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300" htmlFor="email">Email Address</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                <Mail size={20} />
-              </div>
-              <input 
-                id="email"
-                type="email" 
-                className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-[var(--color-bir-yellow)] focus:border-transparent transition-all"
-                placeholder="name@example.com"
-                required
-              />
-            </div>
-          </div>
-          
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300" htmlFor="password">Password</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                <Lock size={20} />
-              </div>
-              <input 
-                id="password"
-                type="password" 
-                className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-[var(--color-bir-yellow)] focus:border-transparent transition-all"
-                placeholder="••••••••"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-300" htmlFor="confirm_password">Confirm Password</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-500">
-                <Lock size={20} />
-              </div>
-              <input 
-                id="confirm_password"
-                type="password" 
-                className="w-full bg-black/20 border border-white/10 rounded-xl py-3 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-[var(--color-bir-yellow)] focus:border-transparent transition-all"
-                placeholder="••••••••"
-                required
-              />
-            </div>
-          </div>
-          
-          <button 
-            type="submit" 
-            className="w-full bg-[var(--color-bir-yellow)] text-[var(--color-bir-blue)] font-bold py-3.5 rounded-xl hover:bg-yellow-400 transition-colors shadow-lg mt-2"
-          >
-            Create Account
-          </button>
-        </form>
-        
-        <div className="mt-8 text-center text-sm text-gray-400">
-          Already have an account?{' '}
-          <Link href="/login" className="text-[var(--color-bir-yellow)] font-semibold hover:underline">
-            Log in instead
           </Link>
         </div>
+      </header>
+
+      {/* Content */}
+      <div className="flex flex-col min-h-screen pt-16 pb-20">
+        <div className="max-w-md mx-auto w-full px-6 flex-1 flex flex-col justify-center">
+          {/* Form Card */}
+          <div className="space-y-8">
+            {/* Header */}
+            <div className="space-y-2">
+              <h1 className="text-3xl font-black text-[var(--color-accent-primary)]">Create account</h1>
+              <p className="text-[var(--color-text-secondary)]">Get started with your <span className="text-[var(--color-accent-primary)] font-semibold">business registration</span></p>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSignup} className="space-y-4">
+              {/* Full Name Field */}
+              <div className="space-y-2">
+                <label htmlFor="name" className="text-sm font-semibold text-[var(--color-text-primary)]">
+                  Full name
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-secondary)] pointer-events-none" />
+                  <input
+                    id="name"
+                    type="text"
+                    placeholder="Juan Dela Cruz"
+                    className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-primary)]/50 focus:border-[var(--color-accent-primary)] transition-all"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Email Field */}
+              <div className="space-y-2">
+                <label htmlFor="email" className="text-sm font-semibold text-[var(--color-text-primary)]">
+                  Email address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-secondary)] pointer-events-none" />
+                  <input
+                    id="email"
+                    type="email"
+                    placeholder="name@example.com"
+                    className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-primary)]/50 focus:border-[var(--color-accent-primary)] transition-all"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Password Field */}
+              <div className="space-y-2">
+                <label htmlFor="password" className="text-sm font-semibold text-[var(--color-text-primary)]">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-secondary)] pointer-events-none" />
+                  <input
+                    id="password"
+                    type={showPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    className="w-full pl-10 pr-10 py-3 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-primary)]/50 focus:border-[var(--color-accent-primary)] transition-all"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Confirm Password Field */}
+              <div className="space-y-2">
+                <label htmlFor="confirm_password" className="text-sm font-semibold text-[var(--color-text-primary)]">
+                  Confirm password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--color-text-secondary)] pointer-events-none" />
+                  <input
+                    id="confirm_password"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    placeholder="••••••••"
+                    className="w-full pl-10 pr-10 py-3 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-primary)]/50 focus:border-[var(--color-accent-primary)] transition-all"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
+                  >
+                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                className="w-full bg-[var(--color-accent-primary)] text-black font-bold py-3.5 rounded-lg hover:bg-yellow-400 active:scale-95 transition-all shadow-lg shadow-yellow-500/20 mt-6"
+              >
+                Create account
+              </button>
+            </form>
+
+            {/* Divider */}
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-[var(--color-border)]"></div>
+              </div>
+              <div className="relative flex justify-center text-xs">
+                <span className="px-2 bg-[var(--color-background)] text-[var(--color-text-secondary)]">or</span>
+              </div>
+            </div>
+
+            {/* Login Link */}
+            <p className="text-center text-sm text-[var(--color-text-secondary)]">
+              Already have an account?{' '}
+              <Link href="/login" className="text-[var(--color-accent-primary)] font-semibold hover:underline">
+                Log in
+              </Link>
+            </p>
+          </div>
+        </div>
       </div>
+
+      {/* Back Link */}
+      <Link href="/" className="fixed top-4 left-6 flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors sm:hidden">
+        <ArrowLeft size={20} />
+      </Link>
     </div>
   );
 }
