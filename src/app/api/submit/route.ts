@@ -145,7 +145,7 @@ export async function POST(request: Request) {
         [
           nextFacilityID,
           nextApplicantID,
-          data.facilityType || null,
+          data.facilityType === 'Others (specify)' ? (data.otherFacilityType || null) : (data.facilityType || null),
           data.facilityAddress || null
         ]
       );
@@ -192,22 +192,27 @@ export async function POST(request: Request) {
         }
       }
 
-      // 9. Insert into invoices (Always execute as requested)
-      await connection.query(
-        `INSERT INTO invoices 
-         (applicantID, invDescription, invType, numOfBoxes, numOfSetsPerBoxes, serialStart, serialEnd, numOfCopies) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          nextApplicantID,
-          data.hasInvoices === 'Yes' ? (data.invDescription || 'Invoices') : 'Invoices',
-          data.hasInvoices === 'Yes' ? (data.invType || null) : null,
-          data.hasInvoices === 'Yes' ? (data.numOfBoxes || null) : null,
-          data.hasInvoices === 'Yes' && data.numOfSetsPerBoxes ? parseInt(data.numOfSetsPerBoxes) : null,
-          data.hasInvoices === 'Yes' ? (data.serialStart || null) : null,
-          data.hasInvoices === 'Yes' ? (data.serialEnd || null) : null,
-          data.hasInvoices === 'Yes' && data.numOfCopies ? parseInt(data.numOfCopies) : null
-        ]
-      );
+      // 9. Insert into invoices
+      if (data.hasInvoices === 'Yes' && data.invoices && Array.isArray(data.invoices)) {
+        for (const inv of data.invoices) {
+          await connection.query(
+            `INSERT INTO invoices 
+             (applicantID, invDescription, invType, numOfBoxesLoose, numOfBoxesBound, numOfSetsPerBoxes, serialStart, serialEnd, numOfCopies) 
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            [
+              nextApplicantID,
+              inv.invDescription || null,
+              inv.invType || null,
+              inv.numOfBoxesLoose ? parseInt(inv.numOfBoxesLoose) : 0,
+              inv.numOfBoxesBound ? parseInt(inv.numOfBoxesBound) : 0,
+              inv.numOfSetsPerBoxes ? parseInt(inv.numOfSetsPerBoxes) : null,
+              inv.serialStart || null,
+              inv.serialEnd || null,
+              inv.numOfCopies ? parseInt(inv.numOfCopies) : null
+            ]
+          );
+        }
+      }
 
       // Commit Transaction
       await connection.commit();
