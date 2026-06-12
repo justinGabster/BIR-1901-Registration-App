@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { ArrowLeft, ArrowRight, CheckCircle2, FileText, User, Building, MapPin, Search, Edit, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -230,7 +231,8 @@ const ApplicationSummaryView = ({ formData }: { formData: any }) => (
   </div>
 );
 
-export default function Form1901() {
+function Form1901Content() {
+  const searchParams = useSearchParams();
   const [step, setStep] = useState(0);
   const [formData, setFormData] = useState(INITIAL_FORM_DATA);
   const [errorMessage, setErrorMessage] = useState("");
@@ -241,11 +243,8 @@ export default function Form1901() {
 
   // Parse URL on load for edit/view modes
   useEffect(() => {
-    if (typeof window === 'undefined') return;
-    
-    const params = new URLSearchParams(window.location.search);
-    const edit = params.get('edit');
-    const view = params.get('view');
+    const edit = searchParams.get('edit');
+    const view = searchParams.get('view');
     
     const fetchApplication = async (id: string, isView: boolean) => {
       setIsFetchingData(true);
@@ -260,9 +259,13 @@ export default function Form1901() {
           } else {
             setStep(1); // Start editing from step 1
           }
+        } else {
+          console.error("Fetch returned error:", data.error);
+          setErrorMessage(data.error || "Failed to load application data.");
         }
       } catch (error) {
-        console.error(error);
+        console.error("Fetch exception:", error);
+        setErrorMessage("Network error fetching application.");
       } finally {
         setIsFetchingData(false);
       }
@@ -375,14 +378,10 @@ export default function Form1901() {
         const result = await response.json();
 
         if (response.ok) {
-          if (editId) {
-            window.location.href = '/dashboard'; // Redirect back to dashboard after editing
-          } else {
-            if (result.applicantID) {
-              setFormData({...formData, applicantID: result.applicantID});
-            }
-            nextStep(); // Go to step 8 (Dashboard)
+          if (result.applicantID) {
+            setFormData({...formData, applicantID: result.applicantID});
           }
+          nextStep(); // Go back to the Welcome Screen (Step 8)
         } else {
           setErrorMessage(result.details ? `${result.error}: ${result.details}` : (result.error || "Failed to submit application."));
         }
@@ -407,6 +406,17 @@ export default function Form1901() {
 
   // Calculate minimum expiry date (either effectivity date or today)
   const minExpiryDate = formData.effectivityDate || new Date().toISOString().split("T")[0];
+
+  if (isFetchingData) {
+    return (
+      <div className="min-h-screen bg-[var(--color-background)] flex items-center justify-center text-white">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-12 h-12 border-4 border-[var(--color-accent-primary)] border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-[var(--color-text-secondary)] font-semibold">Loading Record...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (step === 0) {
     return (
@@ -478,27 +488,28 @@ export default function Form1901() {
               <ArrowLeft size={20} />
             </Link>
           )}
-          <div className="flex items-center gap-3">
-            <img src="/bir-logo.png" alt="BIR" className="w-9 h-9 object-contain" />
-            <h1 className="font-semibold text-sm sm:text-base">BIR Form 1901 Registration</h1>
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink min-w-0">
+            <img src="/bir-logo.png" alt="BIR" className="w-8 h-8 sm:w-9 sm:h-9 object-contain flex-shrink-0" />
+            <h1 className="font-semibold text-xs sm:text-base leading-tight">BIR Form 1901 <span className="hidden sm:inline">Registration</span></h1>
           </div>
           
-          {step >= 8 ? (
-            <div className="ml-auto flex items-center gap-2">
-              <Link href="/dashboard" className="text-xs bg-[#FACC15] text-[#1e3a8a] px-3 sm:px-4 py-1.5 rounded-lg font-bold transition-colors flex items-center gap-1.5 hover:bg-[#EAB308] shadow-sm">
-                <Building size={14} />
-                <span className="hidden sm:inline">Admin Dashboard</span>
-                <span className="sm:hidden">Admin</span>
-              </Link>
+          <div className="ml-auto flex items-center gap-2 sm:gap-3 flex-shrink-0">
+            <Link href="/dashboard" className="text-[10px] sm:text-xs bg-[#FACC15] text-[#1e3a8a] px-2 sm:px-4 py-1.5 rounded-lg font-bold transition-colors flex items-center gap-1 hover:bg-[#EAB308] shadow-sm whitespace-nowrap">
+              <Building size={14} className="sm:w-3.5 sm:h-3.5" />
+              <span className="hidden sm:inline">Admin Dashboard</span>
+              <span className="sm:hidden">Admin</span>
+            </Link>
+            
+            {step >= 8 ? (
               <button onClick={handleLogout} className="text-xs bg-red-600 hover:bg-red-700 text-white px-3 sm:px-4 py-1.5 rounded-lg font-semibold transition-colors">
                 Logout
               </button>
-            </div>
-          ) : (
-            <div className="ml-auto text-xs bg-[var(--color-surface-light)] text-[var(--color-text-secondary)] px-3 py-1.5 rounded-lg border border-[var(--color-border)]">
-              {`Step ${step} of 7`}
-            </div>
-          )}
+            ) : (
+              <div className="text-[10px] sm:text-xs bg-[var(--color-surface-light)] text-[var(--color-text-secondary)] px-2 sm:px-3 py-1.5 rounded-lg border border-[var(--color-border)] whitespace-nowrap">
+                {`Step ${step} of 7`}
+              </div>
+            )}
+          </div>
         </div>
       </header>
 
@@ -561,8 +572,8 @@ export default function Form1901() {
               </div>
                 
               <div className="p-6 border-t border-slate-700 bg-slate-800/20 flex justify-center">
-                <button onClick={() => viewId ? window.location.href = '/dashboard' : setShowSummary(false)} className="bg-[var(--color-bir-yellow)] text-[var(--color-bir-blue)] px-8 py-2.5 rounded-lg hover:bg-yellow-300 transition-colors font-semibold flex items-center gap-2">
-                  <ArrowLeft size={18} /> Back to Dashboard
+                <button onClick={() => setShowSummary(false)} className="bg-[var(--color-bir-yellow)] text-[#1e3a8a] px-8 py-2.5 rounded-lg hover:bg-yellow-400 transition-colors font-bold flex items-center gap-2">
+                  <ArrowLeft size={18} /> Back
                 </button>
               </div>
             </>
@@ -574,31 +585,46 @@ export default function Form1901() {
                   <h2 className="text-3xl font-bold text-[var(--color-bir-yellow)]">Welcome, {formData.tpName || 'Taxpayer'}!</h2>
                   <p className="text-slate-300 mt-2 max-w-md mx-auto">Your application has been successfully processed and recorded in the system.</p>
                   
-                  <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 max-w-4xl mx-auto">
-                    <button onClick={() => setShowSummary(true)} className="bg-slate-700 border border-slate-600 p-6 rounded-lg shadow-sm hover:shadow-md hover:border-[var(--color-bir-yellow)] transition-all group flex flex-col items-center gap-4 cursor-pointer text-left w-full">
-                        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-[var(--color-bir-yellow)] group-hover:scale-110 transition-transform">
-                            <FileText size={32} />
+                  <div className="mt-8 sm:mt-12 grid grid-cols-3 gap-2 sm:gap-6 max-w-4xl mx-auto w-full px-2 sm:px-0">
+                    <button onClick={() => setShowSummary(true)} className="bg-slate-700 border border-slate-600 p-3 sm:p-6 rounded-lg shadow-sm hover:shadow-md hover:border-[var(--color-bir-yellow)] transition-all group flex flex-col items-center gap-2 sm:gap-4 cursor-pointer text-left w-full">
+                        <div className="w-10 h-10 sm:w-16 sm:h-16 bg-slate-800 rounded-full flex items-center justify-center text-[var(--color-bir-yellow)] group-hover:scale-110 transition-transform">
+                            <FileText className="w-5 h-5 sm:w-8 sm:h-8" />
                         </div>
                         <div className="text-center">
-                            <h3 className="font-bold text-white text-lg">Application Summary</h3>
-                            <p className="text-xs text-slate-400 mt-1">Review the details of your submitted form</p>
+                            <h3 className="font-bold text-white text-[11px] sm:text-lg leading-tight">
+                              <span className="sm:hidden">Summary</span>
+                              <span className="hidden sm:inline">Application Summary</span>
+                            </h3>
+                            <p className="hidden sm:block text-xs text-slate-400 mt-1">Review the details of your submitted form</p>
                         </div>
                     </button>
 
                     <button 
-                      onClick={() => { window.location.href = '/form-1901?edit=' + formData.applicantID; }} 
-                      className="bg-slate-700 border border-slate-600 p-6 rounded-lg shadow-sm hover:shadow-md hover:border-blue-400 transition-all group flex flex-col items-center gap-4 cursor-pointer text-left w-full"
+                      type="button"
+                      onClick={() => { 
+                        if (formData.applicantID) {
+                          setEditId(formData.applicantID);
+                        }
+                        setViewId(null);
+                        setShowSummary(false);
+                        setStep(1); 
+                      }} 
+                      className="bg-slate-700 border border-slate-600 p-3 sm:p-6 rounded-lg shadow-sm hover:shadow-md hover:border-blue-400 transition-all group flex flex-col items-center gap-2 sm:gap-4 cursor-pointer text-left w-full"
                     >
-                        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
-                            <Edit size={32} />
+                        <div className="w-10 h-10 sm:w-16 sm:h-16 bg-slate-800 rounded-full flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
+                            <Edit className="w-5 h-5 sm:w-8 sm:h-8" />
                         </div>
                         <div className="text-center">
-                            <h3 className="font-bold text-white text-lg">Edit Registration</h3>
-                            <p className="text-xs text-slate-400 mt-1">Update your submitted application details</p>
+                            <h3 className="font-bold text-white text-[11px] sm:text-lg leading-tight">
+                              <span className="sm:hidden">Edit</span>
+                              <span className="hidden sm:inline">Edit Registration</span>
+                            </h3>
+                            <p className="hidden sm:block text-xs text-slate-400 mt-1">Update your submitted application details</p>
                         </div>
                     </button>
 
                     <button 
+                      type="button"
                       onClick={async () => {
                         if (window.confirm("Are you sure you want to permanently delete your registration?")) {
                           try {
@@ -610,16 +636,25 @@ export default function Form1901() {
                           }
                         }
                       }}
-                      className="bg-slate-700 border border-slate-600 p-6 rounded-lg shadow-sm hover:shadow-md hover:border-red-400 transition-all group flex flex-col items-center gap-4 cursor-pointer text-left w-full"
+                      className="bg-slate-700 border border-slate-600 p-3 sm:p-6 rounded-lg shadow-sm hover:shadow-md hover:border-red-400 transition-all group flex flex-col items-center gap-2 sm:gap-4 cursor-pointer text-left w-full"
                     >
-                        <div className="w-16 h-16 bg-slate-800 rounded-full flex items-center justify-center text-red-400 group-hover:scale-110 transition-transform">
-                            <Trash2 size={32} />
+                        <div className="w-10 h-10 sm:w-16 sm:h-16 bg-slate-800 rounded-full flex items-center justify-center text-red-400 group-hover:scale-110 transition-transform">
+                            <Trash2 className="w-5 h-5 sm:w-8 sm:h-8" />
                         </div>
                         <div className="text-center">
-                            <h3 className="font-bold text-white text-lg">Delete Registration</h3>
-                            <p className="text-xs text-slate-400 mt-1">Permanently remove your application</p>
+                            <h3 className="font-bold text-white text-[11px] sm:text-lg leading-tight">
+                              <span className="sm:hidden">Delete</span>
+                              <span className="hidden sm:inline">Delete Registration</span>
+                            </h3>
+                            <p className="hidden sm:block text-xs text-slate-400 mt-1">Permanently remove your application</p>
                         </div>
                     </button>
+                  </div>
+                  
+                  <div className="mt-12">
+                    <Link href="/dashboard" className="text-slate-400 hover:text-[var(--color-bir-yellow)] transition-colors text-sm flex items-center justify-center gap-2">
+                      <ArrowLeft size={16} /> Back to Admin Dashboard
+                    </Link>
                   </div>
                 </div>
               )}
@@ -1094,5 +1129,20 @@ export default function Form1901() {
         </div>
       </main>
     </div>
+  );
+}
+
+export default function Form1901() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[var(--color-background)] flex items-center justify-center text-white">
+        <div className="flex flex-col items-center space-y-4">
+          <div className="w-12 h-12 border-4 border-[var(--color-accent-primary)] border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-[var(--color-text-secondary)] font-semibold">Loading Form Application...</p>
+        </div>
+      </div>
+    }>
+      <Form1901Content />
+    </Suspense>
   );
 }

@@ -27,6 +27,7 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
 
     const formData = {
       // Step 1
+      applicantID: data.applicantID || applicantID,
       tin: data.tin || '',
       philsysCardNum: data.philsysCardNum || '',
       tpType: data.tpType || '',

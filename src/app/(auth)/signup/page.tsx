@@ -16,15 +16,15 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--color-background)]">
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#2b4c8a] via-[#0a0f1c] to-[#05080f]">
       {/* Header */}
       <header className="border-b border-[var(--color-border)] bg-[var(--color-surface)]/80 backdrop-blur-lg sticky top-0 z-40">
         <div className="max-w-md mx-auto px-6 py-3 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 font-bold">
             <img src="/bir-logo.png" alt="BIR" className="w-9 h-9 object-contain" />
             <div className="flex flex-col leading-tight -space-y-0.5">
-              <span className="text-xs text-[var(--color-text-secondary)]">Bureau of</span>
-              <span className="text-sm sm:text-lg text-[var(--color-accent-primary)] font-bold">Internal Revenue</span>
+              <span className="text-[10px] sm:text-xs text-[var(--color-text-secondary)]">Bureau of</span>
+              <span className="text-xs sm:text-lg text-[var(--color-accent-primary)] font-bold">Internal Revenue</span>
             </div>
           </Link>
         </div>
@@ -37,15 +37,15 @@ export default function SignupPage() {
           <div className="space-y-8">
             {/* Header */}
             <div className="space-y-2">
-              <h1 className="text-3xl font-black text-[var(--color-accent-primary)]">Create account</h1>
-              <p className="text-[var(--color-text-secondary)]">Get started with your <span className="text-[var(--color-accent-primary)] font-semibold">business registration</span></p>
+              <h1 className="text-2xl sm:text-3xl font-black text-[var(--color-accent-primary)]">Create account</h1>
+              <p className="text-sm sm:text-base text-[var(--color-text-secondary)]">Get started with your <span className="text-[var(--color-accent-primary)] font-semibold">business registration</span></p>
             </div>
 
             {/* Form */}
             <form onSubmit={handleSignup} className="space-y-4">
               {/* Full Name Field */}
               <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-semibold text-[var(--color-text-primary)]">
+                <label htmlFor="name" className="text-xs sm:text-sm font-semibold text-[var(--color-text-primary)]">
                   Full name
                 </label>
                 <div className="relative">
@@ -54,7 +54,7 @@ export default function SignupPage() {
                     id="name"
                     type="text"
                     placeholder="Juan Dela Cruz"
-                    className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-primary)]/50 focus:border-[var(--color-accent-primary)] transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg text-sm sm:text-base text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-primary)]/50 focus:border-[var(--color-accent-primary)] transition-all"
                     required
                   />
                 </div>
@@ -62,7 +62,7 @@ export default function SignupPage() {
 
               {/* Email Field */}
               <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-semibold text-[var(--color-text-primary)]">
+                <label htmlFor="email" className="text-xs sm:text-sm font-semibold text-[var(--color-text-primary)]">
                   Email address
                 </label>
                 <div className="relative">
@@ -71,7 +71,7 @@ export default function SignupPage() {
                     id="email"
                     type="email"
                     placeholder="name@example.com"
-                    className="w-full pl-10 pr-4 py-3 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-primary)]/50 focus:border-[var(--color-accent-primary)] transition-all"
+                    className="w-full pl-10 pr-4 py-2.5 sm:py-3 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg text-sm sm:text-base text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-primary)]/50 focus:border-[var(--color-accent-primary)] transition-all"
                     required
                   />
                 </div>
@@ -79,7 +79,7 @@ export default function SignupPage() {
 
               {/* Password Field */}
               <div className="space-y-2">
-                <label htmlFor="password" className="text-sm font-semibold text-[var(--color-text-primary)]">
+                <label htmlFor="password" className="text-xs sm:text-sm font-semibold text-[var(--color-text-primary)]">
                   Password
                 </label>
                 <div className="relative">
@@ -88,7 +88,7 @@ export default function SignupPage() {
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-10 py-3 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-primary)]/50 focus:border-[var(--color-accent-primary)] transition-all"
+                    className="w-full pl-10 pr-10 py-2.5 sm:py-3 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg text-sm sm:text-base text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-primary)]/50 focus:border-[var(--color-accent-primary)] transition-all"
                     required
                   />
                   <button
@@ -103,7 +103,7 @@ export default function SignupPage() {
 
               {/* Confirm Password Field */}
               <div className="space-y-2">
-                <label htmlFor="confirm_password" className="text-sm font-semibold text-[var(--color-text-primary)]">
+                <label htmlFor="confirm_password" className="text-xs sm:text-sm font-semibold text-[var(--color-text-primary)]">
                   Confirm password
                 </label>
                 <div className="relative">
@@ -112,7 +112,7 @@ export default function SignupPage() {
                     id="confirm_password"
                     type={showConfirmPassword ? 'text' : 'password'}
                     placeholder="••••••••"
-                    className="w-full pl-10 pr-10 py-3 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-primary)]/50 focus:border-[var(--color-accent-primary)] transition-all"
+                    className="w-full pl-10 pr-10 py-2.5 sm:py-3 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg text-sm sm:text-base text-[var(--color-text-primary)] placeholder:text-[var(--color-text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent-primary)]/50 focus:border-[var(--color-accent-primary)] transition-all"
                     required
                   />
                   <button
@@ -128,7 +128,7 @@ export default function SignupPage() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full bg-[var(--color-accent-primary)] text-black font-bold py-3.5 rounded-lg hover:bg-yellow-400 active:scale-95 transition-all shadow-lg shadow-yellow-500/20 mt-6"
+                className="w-full bg-[var(--color-accent-primary)] text-black font-bold py-2.5 sm:py-3.5 rounded-lg text-sm sm:text-base hover:bg-yellow-400 active:scale-95 transition-all shadow-lg shadow-yellow-500/20 mt-4 sm:mt-6"
               >
                 Create account
               </button>

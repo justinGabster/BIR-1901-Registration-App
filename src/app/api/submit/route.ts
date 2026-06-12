@@ -12,18 +12,28 @@ export async function POST(request: Request) {
       // Start Transaction
       await connection.beginTransaction();
       
-      // 1. Generate the next applicantID (e.g. A001 -> A002)
-      const [idRows]: any = await connection.query(
-        "SELECT applicantID FROM applicant ORDER BY applicantID DESC LIMIT 1"
+      // 1. Generate the next applicantID using a persistent sequence table
+      await connection.query(
+        "CREATE TABLE IF NOT EXISTS seq_applicant (id INT AUTO_INCREMENT PRIMARY KEY)"
       );
-      
-      let nextApplicantID = 'A001';
-      if (idRows.length > 0) {
-        const lastID = idRows[0].applicantID; // e.g., 'A009'
-        const numericPart = parseInt(lastID.substring(1), 10);
-        const nextNumeric = numericPart + 1;
-        nextApplicantID = 'A' + nextNumeric.toString().padStart(3, '0');
+
+      // Check if it's empty, and if so, initialize it to the current max ID
+      const [seqRows]: any = await connection.query("SELECT COUNT(*) as count FROM seq_applicant");
+      if (seqRows[0].count === 0) {
+        const [idRows]: any = await connection.query(
+          "SELECT applicantID FROM applicant ORDER BY applicantID DESC LIMIT 1"
+        );
+        let startId = 0;
+        if (idRows.length > 0) {
+          startId = parseInt(idRows[0].applicantID.substring(1), 10);
+        }
+        await connection.query(`ALTER TABLE seq_applicant AUTO_INCREMENT = ${startId + 1}`);
       }
+
+      // Insert a new row to get the next auto-incremented persistent ID
+      const [insertResult]: any = await connection.query("INSERT INTO seq_applicant VALUES (NULL)");
+      const nextNumeric = insertResult.insertId;
+      const nextApplicantID = 'A' + nextNumeric.toString().padStart(3, '0');
 
       // 2. Insert into applicant table
       await connection.query(

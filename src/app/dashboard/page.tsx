@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Trash2, Edit, Eye, Plus, Loader2, ArrowLeft } from 'lucide-react';
+import { Trash2, Edit, Eye, Plus, Loader2, ArrowLeft, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Application {
   applicantID: string;
@@ -17,6 +17,7 @@ export default function Dashboard() {
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [sortOrder, setSortOrder] = useState<'desc' | 'asc'>('desc');
   const router = useRouter();
 
   useEffect(() => {
@@ -57,6 +58,14 @@ export default function Dashboard() {
     }
   };
 
+  const sortedApplications = [...applications].sort((a, b) => {
+    if (sortOrder === 'desc') {
+      return b.applicantID.localeCompare(a.applicantID);
+    } else {
+      return a.applicantID.localeCompare(b.applicantID);
+    }
+  });
+
   return (
     <div className="min-h-screen bg-[var(--color-background)] py-12 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-6xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -84,11 +93,19 @@ export default function Dashboard() {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-[var(--color-surface-light)] border-b border-[var(--color-border)]">
-                  <th className="px-6 py-4 text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">ID</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">Taxpayer Name</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">TIN</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">Taxpayer Type</th>
-                  <th className="px-6 py-4 text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">Actions</th>
+                  <th 
+                    className="px-3 sm:px-6 py-4 text-[10px] sm:text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider cursor-pointer hover:text-white transition-colors"
+                    onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
+                  >
+                    <div className="flex items-center gap-1 sm:gap-2">
+                      ID
+                      {sortOrder === 'desc' ? <ChevronDown size={14} className="text-[var(--color-bir-yellow)]" /> : <ChevronUp size={14} className="text-[var(--color-bir-yellow)]" />}
+                    </div>
+                  </th>
+                  <th className="px-3 sm:px-6 py-4 text-[10px] sm:text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">Taxpayer Name</th>
+                  <th className="hidden sm:table-cell px-6 py-4 text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">TIN</th>
+                  <th className="hidden sm:table-cell px-6 py-4 text-xs font-semibold text-[var(--color-text-secondary)] uppercase tracking-wider">Taxpayer Type</th>
+                  <th className="px-3 sm:px-6 py-4 text-[10px] sm:text-xs font-semibold text-[var(--color-text-secondary)] text-right sm:text-left uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[var(--color-border)]">
@@ -108,25 +125,31 @@ export default function Dashboard() {
                     </td>
                   </tr>
                 ) : (
-                  applications.map((app) => (
+                  sortedApplications.map((app) => (
                     <tr key={app.applicantID} className="hover:bg-[var(--color-surface-light)]/50 transition-colors group">
-                      <td className="px-6 py-4 text-sm font-semibold text-[var(--color-accent-primary)] whitespace-nowrap">
+                      <td className="px-3 sm:px-6 py-4 text-xs sm:text-sm font-semibold text-[var(--color-accent-primary)] whitespace-nowrap">
                         {app.applicantID}
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm font-medium text-[var(--color-text-primary)]">{app.tpName || 'N/A'}</div>
-                        <div className="text-xs text-[var(--color-text-secondary)] mt-0.5">{app.emailAdd || 'No email provided'}</div>
+                      <td className="px-3 sm:px-6 py-4">
+                        <div className="text-xs sm:text-sm font-medium text-[var(--color-text-primary)]">{app.tpName || 'N/A'}</div>
+                        <div className="text-[10px] sm:text-xs text-[var(--color-text-secondary)] mt-0.5">{app.emailAdd || 'No email provided'}</div>
+                        <div className="text-[10px] sm:hidden text-[var(--color-text-secondary)] mt-0.5">TIN: {app.tin || 'N/A'}</div>
+                        <div className="mt-1 sm:hidden">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-medium bg-[var(--color-surface-light)] text-[var(--color-text-primary)] border border-[var(--color-border)]">
+                            {app.tpType || 'N/A'}
+                          </span>
+                        </div>
                       </td>
-                      <td className="px-6 py-4 text-sm text-[var(--color-text-primary)] whitespace-nowrap">
+                      <td className="hidden sm:table-cell px-6 py-4 text-sm text-[var(--color-text-primary)] whitespace-nowrap">
                         {app.tin || 'N/A'}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="hidden sm:table-cell px-6 py-4">
                         <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-[var(--color-surface-light)] text-[var(--color-text-primary)] border border-[var(--color-border)]">
                           {app.tpType || 'N/A'}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex items-center gap-3 opacity-80 group-hover:opacity-100 transition-opacity">
+                      <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-right sm:text-left">
+                        <div className="flex items-center justify-end sm:justify-start gap-2 sm:gap-3 opacity-90 group-hover:opacity-100 transition-opacity">
                           <button 
                             onClick={() => router.push(`/form-1901?view=${app.applicantID}`)}
                             title="View Details"
