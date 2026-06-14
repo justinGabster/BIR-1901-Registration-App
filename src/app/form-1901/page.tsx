@@ -53,7 +53,6 @@ const INITIAL_FORM_DATA = {
   businesses: [
     { id: 1, businessName: '', businessRegNum: '', businessRegDate: '', businessLine: '', industryLevel: 'Primary', regulatoryBody: '' }
   ],
-  facilityType: '', facilityAddress: '',
 
   // Representative Details
   hasRepresentative: 'No',
