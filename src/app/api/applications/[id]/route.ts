@@ -22,8 +22,17 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
     const data = applicant[0];
     const contacts = applicantContact.map((c: any) => ({ type: c.prefContactType, details: c.prefContactDetails }));
     
-    // Formatting dates
-    const formatDate = (dateString: string) => dateString ? new Date(dateString).toISOString().split('T')[0] : '';
+    // Formatting dates safely to avoid "Invalid time value"
+    const formatDate = (dateVal: any) => {
+      if (!dateVal) return '';
+      try {
+        const d = new Date(dateVal);
+        if (isNaN(d.getTime())) return '';
+        return d.toISOString().split('T')[0];
+      } catch (e) {
+        return '';
+      }
+    };
 
     const formData = {
       // Step 1
@@ -53,12 +62,32 @@ export async function GET(request: Request, { params }: { params: Promise<{ id: 
       landlineDetails: contacts.find((c: any) => c.type === 'Landline Number')?.details || '',
       faxDetails: contacts.find((c: any) => c.type === 'Fax Number')?.details || '',
       mobileDetails: contacts.find((c: any) => c.type === 'Mobile Number')?.details || '',
-      idType: idValidation[0]?.idType || '',
+      idType: (() => {
+        const type = idValidation[0]?.idType || '';
+        const predefined = ['Passport', 'Driver\'s License', 'Company ID', 'UMID', 'Postal ID'];
+        if (!type) return '';
+        return predefined.includes(type) ? type : 'Other';
+      })(),
+      otherIdType: (() => {
+        const type = idValidation[0]?.idType || '';
+        const predefined = ['Passport', 'Driver\'s License', 'Company ID', 'UMID', 'Postal ID'];
+        return (!predefined.includes(type) && type !== '') ? type : '';
+      })(),
       idNumber: idValidation[0]?.idNumber || '',
       effectivityDate: formatDate(idValidation[0]?.effectivityDate),
       expiryDate: formatDate(idValidation[0]?.expiryDate),
       issuer: idValidation[0]?.issuer || '',
-      placeOfIssue: idValidation[0]?.placeOfIssue || '',
+      placeOfIssue: (() => {
+        const type = idValidation[0]?.placeOfIssue || '';
+        const predefined = ['Philippines'];
+        if (!type) return '';
+        return predefined.includes(type) ? type : 'Other';
+      })(),
+      otherPlaceOfIssue: (() => {
+        const type = idValidation[0]?.placeOfIssue || '';
+        const predefined = ['Philippines'];
+        return (!predefined.includes(type) && type !== '') ? type : '';
+      })(),
 
       // Step 3
       spouseName: spousal[0]?.spouseName || '',

@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       // Start Transaction
       await connection.beginTransaction();
       
-      // 1. Generate the next applicantID using a persistent sequence table
+      // 1. Generate the next applicantID using a persistent sequence table (never reuse deleted IDs)
       await connection.query(
         "CREATE TABLE IF NOT EXISTS seq_applicant (id INT AUTO_INCREMENT PRIMARY KEY)"
       );
@@ -21,11 +21,11 @@ export async function POST(request: Request) {
       const [seqRows]: any = await connection.query("SELECT COUNT(*) as count FROM seq_applicant");
       if (seqRows[0].count === 0) {
         const [idRows]: any = await connection.query(
-          "SELECT applicantID FROM applicant ORDER BY applicantID DESC LIMIT 1"
+          "SELECT CAST(SUBSTRING(applicantID, 2) AS UNSIGNED) as numId FROM applicant ORDER BY numId DESC LIMIT 1"
         );
         let startId = 0;
         if (idRows.length > 0) {
-          startId = parseInt(idRows[0].applicantID.substring(1), 10);
+          startId = idRows[0].numId;
         }
         await connection.query(`ALTER TABLE seq_applicant AUTO_INCREMENT = ${startId + 1}`);
       }
@@ -92,12 +92,12 @@ export async function POST(request: Request) {
          VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
           nextApplicantID,
-          data.idType || null,
+          data.idType === 'Other' ? (data.otherIdType || null) : (data.idType || null),
           data.idNumber || null,
           data.effectivityDate || null,
           data.expiryDate || null,
           data.issuer || null,
-          data.placeOfIssue || null
+          data.placeOfIssue === 'Other' ? (data.otherPlaceOfIssue || null) : (data.placeOfIssue || null)
         ]
       );
 

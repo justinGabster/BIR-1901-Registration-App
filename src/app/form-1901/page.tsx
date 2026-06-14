@@ -7,8 +7,7 @@ import { ArrowLeft, ArrowRight, CheckCircle2, FileText, User, Building, MapPin, 
 import Image from 'next/image';
 
 const COUNTRIES = [
-  "Philippines", "United States", "Japan", "China", "South Korea", "Australia", 
-  "Canada", "United Kingdom", "Singapore", "Saudi Arabia", "United Arab Emirates", "Other"
+  "Philippines", "Other"
 ];
 
 const InputField = ({ label, name, type = "text", placeholder = "", required = false, formData, updateForm, pattern, min, max, maxLength, optionalLabel }: any) => (
@@ -44,7 +43,7 @@ const INITIAL_FORM_DATA = {
   // Contact & ID Validation
   emailAdd: '', prefContactType: '', landlineDetails: '', faxDetails: '', mobileDetails: '',
   idType: '', otherIdType: '', idNumber: '', effectivityDate: '', expiryDate: '',
-  issuer: '', placeOfIssue: 'Philippines',
+  issuer: '', placeOfIssue: '', otherPlaceOfIssue: '',
 
   // Spousal Info
   spouseName: '', spouseTin: '', spouseEmpStatus: '',
@@ -240,6 +239,7 @@ function Form1901Content() {
   const [editId, setEditId] = useState<string | null>(null);
   const [viewId, setViewId] = useState<string | null>(null);
   const [isFetchingData, setIsFetchingData] = useState(false);
+  const [consentGiven, setConsentGiven] = useState(false);
 
   // Parse URL on load for edit/view modes
   useEffect(() => {
@@ -652,8 +652,8 @@ function Form1901Content() {
                   </div>
                   
                   <div className="mt-12">
-                    <Link href="/dashboard" className="text-slate-400 hover:text-[var(--color-bir-yellow)] transition-colors text-sm flex items-center justify-center gap-2">
-                      <ArrowLeft size={16} /> Back to Admin Dashboard
+                    <Link href="/" className="text-slate-400 hover:text-[var(--color-bir-yellow)] transition-colors text-sm flex items-center justify-center gap-2">
+                      <ArrowLeft size={16} /> Back to Home
                     </Link>
                   </div>
                 </div>
@@ -711,7 +711,7 @@ function Form1901Content() {
                       </select>
                     </div>
                     
-                    <InputField label="Date of Birth" name="birthDate" type="date" required formData={formData} updateForm={updateForm} />
+                    <InputField label="Date of Birth" name="birthDate" type="date" max={new Date().toISOString().split('T')[0]} required formData={formData} updateForm={updateForm} />
                     <InputField label="Place of Birth" name="birthPlace" formData={formData} updateForm={updateForm} required />
                     <InputField label="Mother's Maiden Name (Last, First, Middle)" name="motherMaidenName" formData={formData} updateForm={updateForm} required />
                     <InputField label="Father's Name (Last, First, Middle)" name="fatherName" formData={formData} updateForm={updateForm} required />
@@ -739,7 +739,7 @@ function Form1901Content() {
               {/* STEP 2 */}
               {step === 2 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
-                  <h2 className="text-xl font-bold text-[#1e3a8a] border-b pb-3">Step 2: Classification, Contact & ID</h2>
+                  <h2 className="text-xl font-bold text-[var(--color-accent-primary)] border-b border-[var(--color-border)] pb-3">Step 2: Classification, Contact & ID</h2>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     <InputField label="Purpose of TIN Application" name="tinApplicationPurpose" formData={formData} updateForm={updateForm} required />
@@ -814,9 +814,15 @@ function Form1901Content() {
                     <div className="space-y-1">
                       <label className={labelStyles}>Country of Issue <span className="text-red-500">*</span></label>
                       <select name="placeOfIssue" value={formData.placeOfIssue} onChange={updateForm} className={selectStyles} required>
+                        <option value="" disabled>Select Country of Issue</option>
                         {COUNTRIES.map(c => <option key={c} value={c}>{c}</option>)}
                       </select>
                     </div>
+                    {formData.placeOfIssue === 'Other' && (
+                      <div className="md:col-span-2">
+                        <InputField label="Specify Other Country of Issue" name="otherPlaceOfIssue" formData={formData} updateForm={updateForm} required />
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -824,7 +830,7 @@ function Form1901Content() {
               {/* STEP 3 */}
               {step === 3 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
-                  <h2 className="text-xl font-bold text-[#1e3a8a] border-b pb-3">Step 3: Spousal Information</h2>
+                  <h2 className="text-xl font-bold text-[var(--color-accent-primary)] border-b border-[var(--color-border)] pb-3">Step 3: Spousal Information</h2>
                   {formData.civilStatus === 'Single' ? (
                     <div className="p-6 bg-blue-50 border-l-4 border-[#1e3a8a] rounded-r-lg text-sm">
                       <p className="text-[#1e3a8a]">You selected "Single" as your civil status. This section is not required.</p>
@@ -859,7 +865,7 @@ function Form1901Content() {
               {/* STEP 4 */}
               {step === 4 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
-                  <h2 className="text-xl font-bold text-[#1e3a8a] border-b pb-3">Step 4: Business & Facility Information</h2>
+                  <h2 className="text-xl font-bold text-[var(--color-accent-primary)] border-b border-[var(--color-border)] pb-3">Step 4: Business & Facility Information</h2>
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
                     <div className="md:col-span-2"><InputField label="Philippine Business Number" name="singleBusinessNum" placeholder="e.g. PBN-2008-0314-00456" formData={formData} updateForm={updateForm} optionalLabel /></div>
@@ -939,7 +945,7 @@ function Form1901Content() {
               {/* STEP 5 */}
               {step === 5 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
-                  <h2 className="text-xl font-bold text-[#1e3a8a] border-b pb-3">Step 5: Authorized Representative</h2>
+                  <h2 className="text-xl font-bold text-[var(--color-accent-primary)] border-b border-[var(--color-border)] pb-3">Step 5: Authorized Representative</h2>
                   <div className="space-y-1 pb-2">
                     <label className={labelStyles}>Do you have an authorized representative?</label>
                     <div className="flex gap-4 mt-1.5 text-sm">
@@ -1013,7 +1019,7 @@ function Form1901Content() {
               {/* STEP 6 */}
               {step === 6 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
-                  <h2 className="text-xl font-bold text-[#1e3a8a] border-b pb-3">Step 6: Invoices</h2>
+                  <h2 className="text-xl font-bold text-[var(--color-accent-primary)] border-b border-[var(--color-border)] pb-3">Step 6: Invoices</h2>
                   <div className="space-y-1 pb-2">
                     <label className={labelStyles}>Do you intend to use BIR Printed Invoices?</label>
                     <div className="flex gap-4 mt-1.5 text-sm">
@@ -1053,7 +1059,7 @@ function Form1901Content() {
                             <label className={labelStyles}>Manner of Invoices <span className="text-red-500">*</span></label>
                             <select name="invManner" value={invoice.invManner} onChange={(e: any) => updateInvoiceForm(index, e)} className={selectStyles.replace('bg-gray-50', 'bg-white')} required>
                               <option value="" disabled>Select Manner of Invoices</option>
-                              <option>Loose Leaf</option><option>Bound</option><option>Both</option>
+                              <option>Loose Leaf</option><option>Bound</option>
                             </select>
                           </div>
                           
@@ -1083,16 +1089,22 @@ function Form1901Content() {
               {/* STEP 7 */}
               {step === 7 && (
                 <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
-                  <h2 className="text-xl font-bold text-[#1e3a8a] border-b pb-3">Step 7: Final Review & Submit</h2>
+                  <h2 className="text-xl font-bold text-[var(--color-accent-primary)] border-b border-[var(--color-border)] pb-3">Step 7: Final Review & Submit</h2>
                   
-                  <div className="bg-[var(--surface)] rounded-xl border border-[var(--border)] overflow-hidden p-6 max-h-[50vh] overflow-y-auto shadow-inner">
+                  <div className="bg-[var(--surface)] rounded-xl border border-[var(--border)] overflow-hidden p-4 sm:p-6 max-h-[60vh] sm:max-h-[65vh] overflow-y-auto shadow-inner">
                     <ApplicationSummaryView formData={formData} />
                   </div>
                   
-                  <div className="bg-blue-900/20 border border-blue-800 rounded-lg p-5 flex gap-3 text-xs text-blue-200">
-                    <div className="mt-0.5"><CheckCircle2 size={16} className="text-blue-400" /></div>
-                    <p className="leading-relaxed"><strong>Declaration:</strong> I declare, under the penalties of perjury, that this application has been made in good faith, verified by me and to the best of my knowledge and belief, is true and correct, pursuant to the provisions of the National Internal Revenue Code, as amended, and the regulations issued under the authority thereof. Further, I give my consent to the processing of my information as contemplated under the Data Privacy Act of 2012 for legitimate and lawful purposes.</p>
-                  </div>
+                  <label className="bg-blue-900/20 border border-blue-800 rounded-lg p-4 sm:p-5 flex gap-3 text-xs text-blue-200 cursor-pointer hover:bg-blue-900/30 transition-colors">
+                    <div className="mt-0.5 shrink-0">
+                      <input type="checkbox" checked={consentGiven} onChange={(e) => setConsentGiven(e.target.checked)} className="w-4 h-4 accent-[#FACC15] cursor-pointer" required />
+                    </div>
+                    <div>
+                      <strong className="block mb-1 sm:inline sm:mb-0">Declaration: </strong>
+                      <span className="sm:hidden leading-snug">I declare under penalties of perjury that this application is true and correct. I also consent to the processing of my data under the Data Privacy Act.</span>
+                      <span className="hidden sm:inline leading-relaxed">I declare, under the penalties of perjury, that this application has been made in good faith, verified by me and to the best of my knowledge and belief, is true and correct, pursuant to the provisions of the National Internal Revenue Code, as amended, and the regulations issued under the authority thereof. Further, I give my consent to the processing of my information as contemplated under the Data Privacy Act of 2012 for legitimate and lawful purposes.</span>
+                    </div>
+                  </label>
                   
                   {errorMessage && (
                     <div className="p-4 bg-red-50 border border-red-200 text-red-600 rounded-lg text-sm font-semibold flex items-start gap-3">
@@ -1114,7 +1126,7 @@ function Form1901Content() {
                   </button>
                 )}
                 {step === 7 && !viewId && (
-                  <button type="submit" disabled={isFetchingData} className="flex items-center gap-2 bg-[#FACC15] text-[#1e3a8a] px-6 py-2.5 rounded-lg text-sm font-bold hover:bg-[#EAB308] hover:shadow-lg transition-all">
+                  <button type="submit" disabled={isFetchingData || !consentGiven} className={`flex items-center gap-2 px-6 py-2.5 rounded-lg text-sm font-bold transition-all ${(!consentGiven || isFetchingData) ? 'bg-gray-600 text-gray-400 cursor-not-allowed' : 'bg-[#FACC15] text-[#1e3a8a] hover:bg-[#EAB308] hover:shadow-lg'}`}>
                     {editId ? 'Save Changes' : 'Submit Application'}
                   </button>
                 )}
