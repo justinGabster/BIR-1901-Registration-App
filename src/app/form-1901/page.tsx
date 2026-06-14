@@ -34,7 +34,7 @@ const InputField = ({ label, name, type = "text", placeholder = "", required = f
 
 const INITIAL_FORM_DATA = {
   // Applicant Personal Details
-  philsysCardNum: '', tin: '', tpType: '', tpName: '',
+  applicantID: '', philsysCardNum: '', tin: '', tpType: '', tpName: '',
   gender: '', civilStatus: '', birthDate: '', birthPlace: '',
   motherMaidenName: '', fatherName: '', citizenship: '', otherCitizenship: '',
   localResAdd: '', businessAdd: '', foreignAdd: '', tinApplicationPurpose: '',
