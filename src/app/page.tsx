@@ -59,9 +59,6 @@ export default function Home() {
               <Link href="/signup" className="flex items-center justify-center gap-2 bg-[var(--color-accent-primary)] text-black font-bold py-2.5 sm:py-3.5 px-6 sm:px-8 rounded-lg hover:bg-yellow-400 active:scale-95 transition-all shadow-lg shadow-yellow-500/20 text-sm sm:text-base">
                 Start Registration <ArrowRight size={16} strokeWidth={2.5} className="sm:w-[18px] sm:h-[18px]" />
               </Link>
-              <Link href="/login" className="flex items-center justify-center gap-2 border border-[var(--color-border)] text-[var(--color-text-primary)] font-semibold py-2.5 sm:py-3.5 px-6 sm:px-8 rounded-lg hover:bg-[var(--color-surface-light)] active:scale-95 transition-all text-sm sm:text-base">
-                Continue Draft
-              </Link>
             </div>
           </section>
 
@@ -69,21 +66,21 @@ export default function Home() {
           <section className="space-y-4 py-8 sm:py-12 border-t border-[var(--color-border)]">
             <h2 className="text-2xl font-bold">Admin Options</h2>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Link href="/dashboard" className="p-4 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg hover:border-[var(--color-accent-primary)]/50 transition-all group block">
-                <div className="flex items-start gap-3">
-                  <Building className="w-5 h-5 text-[var(--color-accent-primary)] flex-shrink-0 mt-0.5" />
-                  <div>
-                    <h3 className="font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-primary)] transition-colors">Admin Dashboard</h3>
-                    <p className="text-xs text-[var(--color-text-secondary)] mt-1">Manage and review all incoming registrations</p>
-                  </div>
-                </div>
-              </Link>
               <Link href="/sql-showroom" className="p-4 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg hover:border-[var(--color-accent-primary)]/50 transition-all group block">
                 <div className="flex items-start gap-3">
                   <Terminal className="w-5 h-5 text-[var(--color-accent-primary)] flex-shrink-0 mt-0.5" />
                   <div>
                     <h3 className="font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-primary)] transition-colors">SQL Query Showroom</h3>
                     <p className="text-xs text-[var(--color-text-secondary)] mt-1">Execute pre-compiled database validation, relational joins, and multi-level data aggregations.</p>
+                  </div>
+                </div>
+              </Link>
+              <Link href="/dashboard" className="p-4 bg-[var(--color-surface-light)] border border-[var(--color-border)] rounded-lg hover:border-[var(--color-accent-primary)]/50 transition-all group block">
+                <div className="flex items-start gap-3">
+                  <Building className="w-5 h-5 text-[var(--color-accent-primary)] flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h3 className="font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-accent-primary)] transition-colors">Admin Dashboard</h3>
+                    <p className="text-xs text-[var(--color-text-secondary)] mt-1">Manage and review all incoming registrations</p>
                   </div>
                 </div>
               </Link>
@@ -125,7 +122,7 @@ export default function Home() {
                 <p className="text-sm text-[var(--color-text-secondary)] mt-2">{item.label}</p>
               </div>
             ))}
-      </section>
+          </section>
     </div>
   </main>
 

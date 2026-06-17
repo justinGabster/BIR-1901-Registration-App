@@ -87,6 +87,8 @@ export default function Dashboard() {
           </button>
         </div>
 
+
+
         {/* Data Table Container */}
         <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-2xl shadow-xl overflow-hidden">
           <div className="overflow-x-auto">
@@ -150,6 +152,7 @@ export default function Dashboard() {
                       </td>
                       <td className="px-3 sm:px-6 py-4 whitespace-nowrap text-sm font-medium text-right sm:text-left">
                         <div className="flex items-center justify-end sm:justify-start gap-2 sm:gap-3 opacity-90 group-hover:opacity-100 transition-opacity">
+
                           <button 
                             onClick={() => router.push(`/form-1901?view=${app.applicantID}`)}
                             title="View Details"
